@@ -1,3 +1,4 @@
+import { AccountsRegister } from '@microservices/contracts';
 import { UserRole } from '@microservices/interfaces';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -7,7 +8,6 @@ import {
   INVALID_CREDENTIALS_ERROR,
   REGISTERED_USER_ERROR,
 } from './auth.constant';
-import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +16,7 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  async register({ email, displayName, password }: RegisterDto) {
+  async register({ email, displayName, password }: AccountsRegister.Request) {
     const oldUser = await this.userRepository.findUser(email);
     if (oldUser) {
       throw new BadRequestException(REGISTERED_USER_ERROR);
