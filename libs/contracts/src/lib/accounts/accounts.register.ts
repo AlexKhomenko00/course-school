@@ -1,10 +1,17 @@
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 export namespace AccountsRegister {
   export const topic = 'accounts.register.command';
 
   export class Request {
+    @IsEmail()
     email: string;
+
+    @IsString()
     password: string;
-    displayName: string;
+
+    @IsOptional()
+    @IsString()
+    displayName?: string;
   }
 
   export class Response {

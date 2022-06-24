@@ -16,7 +16,7 @@ export const getRMQConfig = (): IRMQServiceAsyncOptions => {
       ],
       queueName: configService.get('AMQP_QUEUE'),
       prefetchCount: 32,
-      serviceName: 'purple-account',
+      serviceName: 'microservices-account',
     }),
   };
 };
