@@ -15,7 +15,5 @@ import { getRMQConfig } from './configs/rmq.config';
     UserModule,
     AuthModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
