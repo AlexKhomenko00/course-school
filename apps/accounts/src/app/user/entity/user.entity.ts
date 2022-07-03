@@ -1,4 +1,11 @@
-import { IUser, IUserCourses, UserRole } from '@microservices/interfaces';
+import { AccountsChangedCourse } from '@microservices/contracts';
+import {
+  IDomainEvent,
+  IUser,
+  IUserCourses,
+  PurchaseState,
+  UserRole,
+} from '@microservices/interfaces';
 import { compare, genSalt, hash } from 'bcryptjs';
 
 export class UserEntity implements IUser {
@@ -8,6 +15,7 @@ export class UserEntity implements IUser {
   passwordHash: string;
   role: UserRole;
   courses?: IUserCourses[];
+  events: IDomainEvent[] = [];
 
   constructor(user: IUser) {
     this._id = user._id;
@@ -21,6 +29,37 @@ export class UserEntity implements IUser {
   public async setPassword(password: string) {
     const salt = await genSalt(10);
     this.passwordHash = await hash(password, salt);
+    return this;
+  }
+
+  public setCourseStatus(courseId: string, state: PurchaseState) {
+    const existingCourse = this.courses.find(
+      (course) => course.courseId === courseId
+    );
+
+    if (!existingCourse) {
+      this.courses.push({ courseId, purchaseState: state });
+      return this;
+    }
+
+    if (state === PurchaseState.Canceled) {
+      this.courses = this.courses.filter(
+        (course) => course.courseId !== courseId
+      );
+      return this;
+    }
+
+    this.courses = this.courses.map((course) => {
+      if (course.courseId === courseId) {
+        course.purchaseState = state;
+      }
+      return course;
+    });
+
+    this.events.push({
+      topic: AccountsChangedCourse.topic,
+      data: { courseId, userId: this._id, state },
+    });
     return this;
   }
 

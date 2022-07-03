@@ -1,26 +1,40 @@
-import { AccountsChangeProfile } from '@microservices/contracts';
+import {
+  AccountsBuyCourse,
+  AccountsChangeProfile,
+  AccountsCheckPayment,
+} from '@microservices/contracts';
 import { Body, Controller } from '@nestjs/common';
-import { RMQRoute, RMQValidate } from 'nestjs-rmq';
+import { RMQRoute, RMQService, RMQValidate } from 'nestjs-rmq';
 import { UserEntity } from './entity/user.entity';
 import { UserRepository } from './repositories/user.repository';
+import { BuyCourseSaga } from './sagas/buy-course.saga';
+import { UserService } from './user.service';
 
 @Controller()
 export class UserCommands {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly userService: UserService) {}
 
   @RMQValidate()
   @RMQRoute(AccountsChangeProfile.topic)
   async changeProfile(
     @Body() { id, user }: AccountsChangeProfile.Request
   ): Promise<AccountsChangeProfile.Response> {
-    const existingUser = await this.userRepository.findById(id);
-    if (!existingUser) {
-      throw new Error('User not found');
-    }
-    const userEntity = new UserEntity(existingUser).updateProfile(
-      user.displayName
-    );
-    await this.userRepository.updateUser(userEntity);
-    return;
+    return this.userService.changeProfile(user, id);
+  }
+
+  @RMQValidate()
+  @RMQRoute(AccountsBuyCourse.topic)
+  async buyCourse(
+    @Body() { userId, courseId }: AccountsBuyCourse.Request
+  ): Promise<AccountsBuyCourse.Response> {
+    return this.userService.buyCourse(userId, courseId);
+  }
+
+  @RMQValidate()
+  @RMQRoute(AccountsCheckPayment.topic)
+  async checkPayment(
+    @Body() { userId, courseId }: AccountsCheckPayment.Request
+  ): Promise<AccountsCheckPayment.Response> {
+    return this.userService.checkPayment(userId, courseId);
   }
 }
