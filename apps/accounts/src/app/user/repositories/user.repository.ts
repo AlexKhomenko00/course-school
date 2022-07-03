@@ -23,6 +23,10 @@ export class UserRepository {
     return this.userModel.findById(id).exec();
   }
 
+  async updateUser({ _id, ...rest }: UserEntity) {
+    return this.userModel.findByIdAndUpdate(_id, rest).exec();
+  }
+
   async deleteUser(email: string) {
     this.userModel.deleteOne({ email }).exec();
   }
