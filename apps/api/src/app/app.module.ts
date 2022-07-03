@@ -8,6 +8,7 @@ import { getRMQConfig } from './configs/rmq.config';
 import { AuthController } from './controllers/auth.controller';
 import { UserController } from './controllers/user.controller';
 import { JwtAuthStrategy } from './strategies/jwt.strategy';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { JwtAuthStrategy } from './strategies/jwt.strategy';
     JwtModule.registerAsync(getJwtConfig()),
     RMQModule.forRootAsync(getRMQConfig()),
     PassportModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AuthController, UserController],
   providers: [JwtAuthStrategy],
