@@ -65,7 +65,7 @@ export class BuyCourseSagaStatePending extends BuyCourseSagaState {
       case 'canceled':
         this.saga.setState(PurchaseState.Canceled, this.saga.courseId);
         break;
-      case 'success ':
+      case 'success':
         this.saga.setState(PurchaseState.Purchased, this.saga.courseId);
         break;
     }

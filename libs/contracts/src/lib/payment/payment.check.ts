@@ -1,6 +1,6 @@
 import { IsMongoId, IsNumber, IsString } from 'class-validator';
 
-export type PaymentStatus = 'canceled' | 'success ' | 'pending';
+export type PaymentStatus = 'canceled' | 'success' | 'pending';
 
 export namespace PaymentCheck {
   export const topic = 'payment.check.query';
