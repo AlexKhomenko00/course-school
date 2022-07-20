@@ -4,10 +4,7 @@ import {
   AccountsCheckPayment,
 } from '@microservices/contracts';
 import { Body, Controller } from '@nestjs/common';
-import { RMQRoute, RMQService, RMQValidate } from 'nestjs-rmq';
-import { UserEntity } from './entity/user.entity';
-import { UserRepository } from './repositories/user.repository';
-import { BuyCourseSaga } from './sagas/buy-course.saga';
+import { RMQRoute, RMQValidate } from 'nestjs-rmq';
 import { UserService } from './user.service';
 
 @Controller()
